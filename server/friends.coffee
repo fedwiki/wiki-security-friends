@@ -90,8 +90,6 @@ module.exports = exports = (log, loga, argv) ->
   security.login = (updateOwner) ->
     (req, res) ->
       ###
-      if owner is not '' -- so site is claimed
-        check that the provided access code is the same as that used to claim the site
 
       if owner is '' -- site is not claimed
         secret = require('crypto').randomBytes(64).toString('hex')
@@ -100,6 +98,14 @@ module.exports = exports = (log, loga, argv) ->
         res.session.friend = secret
         id = {name: 'a friend', friend: {secret: secret}}
 
+      ###
+
+  security.reclaim = () ->
+    (req, res) ->
+      ###
+        check reclaim code is valid
+        if not valid ignore request and exit
+        if valid create cookie with secret and redirect to wiki site
       ###
 
 
