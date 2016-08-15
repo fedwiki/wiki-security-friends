@@ -46,6 +46,9 @@ setup = (user) ->
   if (!$("link[href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css']").length)
     $('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">').appendTo("head")
 
+  if (!$("link[href='/security/style.css']").length)
+    $('<link rel="stylesheet" href="/security/style.css">').appendTo("head")
+
   update_footer ownerName, isAuthenticated
 
 window.plugins.security = {setup, update_footer}
