@@ -5,16 +5,6 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
 
-
-    authors: {
-      prior: [
-        "Austin King <shout@ozten.com>",
-        "Ward Cunningham <ward@c2.com>",
-        "Nick Niemeir <nick.niemeir@gmail.com>",
-        "Paul Rodwell <paul.rodwell@btinternet.com>"
-      ]
-    },
-
     browserify: {
       plugin: {
         src: ['client/security.coffee'],
