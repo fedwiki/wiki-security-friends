@@ -75,14 +75,17 @@ module.exports = exports = (log, loga, argv) ->
     else
       return ''
 
-  security.isAuthorized = ->
-    if req.session.friend is owner.friend.secret
-      return true
-    else
+  security.isAuthorized = (req) ->
+    try
+      if req.session.friend is owner.friend.secret
+        return true
+      else
+        return false
+    catch error
       return false
 
   # Wiki server admin
-  security.isAdmin = ->
+  security.isAdmin = (req) ->
     if req.session.friend is admin
       return true
     else
@@ -133,4 +136,3 @@ module.exports = exports = (log, loga, argv) ->
 
   console.log 'friends defined'
   security
-
