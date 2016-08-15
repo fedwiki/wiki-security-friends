@@ -2,3 +2,4 @@ node_modules
 *.log
 /client/*.js
 /client/*.map
+/server/*.js
