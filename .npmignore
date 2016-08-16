@@ -1,0 +1,4 @@
+#
+test
+client/*.coffee
+server/*.js

@@ -13,13 +13,14 @@
 # allow the server to run read-only.
 
 #### Requires ####
+console.log 'friends starting'
 fs = require 'fs'
 
 
 # Export a function that generates security handler
 # when called with options object.
 module.exports = exports = (log, loga, argv) ->
-  security={}
+  security = {}
 
   #### Private utility methods. ####
 
@@ -74,14 +75,17 @@ module.exports = exports = (log, loga, argv) ->
     else
       return ''
 
-  security.isAuthorized = ->
-    if req.session.friend is owner.friend.secret
-      return true
-    else
+  security.isAuthorized = (req) ->
+    try
+      if req.session.friend is owner.friend.secret
+        return true
+      else
+        return false
+    catch error
       return false
 
   # Wiki server admin
-  security.isAdmin = ->
+  security.isAdmin = (req) ->
     if req.session.friend is admin
       return true
     else
@@ -99,6 +103,8 @@ module.exports = exports = (log, loga, argv) ->
         id = {name: 'a friend', friend: {secret: secret}}
 
       ###
+      console.log 'friends: login'
+      "ok"
 
   security.reclaim = () ->
     (req, res) ->
@@ -107,11 +113,13 @@ module.exports = exports = (log, loga, argv) ->
         if not valid ignore request and exit
         if valid create cookie with secret and redirect to wiki site
       ###
+      console.log 'friends: reclaim'
+      "ok"
 
 
   security.logout = () ->
   (req, res) ->
-    console.log "Logout..."
+    console.log "friends: logout"
 
   security.defineRoutes = (app, cors, updateOwner) ->
 
@@ -126,5 +134,5 @@ module.exports = exports = (log, loga, argv) ->
       security.logout()
       res.send("OK")
 
-
+  console.log 'friends defined'
   security
