@@ -33,6 +33,17 @@ update_footer = (ownerName, isAuthenticated) ->
       signonTitle = 'Claim this Wiki'
       $('footer > #security').append "<a href='#' id='show-security-dialog' class='footer-item' title='#{signonTitle}'><i class='fa fa-lock fa-lg fa-fw'></i></a>"
       $('footer > #security > #show-security-dialog').click (e) ->
+        fetch '/login', {method: 'POST'}
+        .then (response) ->
+          console.log 'login response', response
+          if response.ok
+            # isAuthenticated = false
+            # isOwner = false
+            # user = ''
+            # document.cookie = "state=loggedOut" + ";domain=." + settings.cookieDomain + "; path=/; max-age=60;"
+            # update_footer ownerName, isAuthenticated
+          else
+            console.log 'login failed: ', response
         # code to claim with wiki - just call to /login
     else
       signonTitle = 'Wiki already claimed'
