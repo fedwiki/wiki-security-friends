@@ -60,9 +60,9 @@ module.exports = exports = (log, loga, argv) ->
     owner = id
     fs.exists idFile, (exists) ->
       if !exists
-        fs.writeFile(idFile, id, (err) ->
+        fs.writeFile(idFile, JSON.stringify(id, null, "  "), (err) ->
           if err then return cb err
-          # console.log "Claiming site for #{id}"
+          console.log "Claiming site for ", id:id
           owner = id
           cb())
       else
