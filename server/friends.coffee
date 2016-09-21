@@ -60,9 +60,9 @@ module.exports = exports = (log, loga, argv) ->
     owner = id
     fs.exists idFile, (exists) ->
       if !exists
-        fs.writeFile(idFile, id, (err) ->
+        fs.writeFile(idFile, JSON.stringify(id, null, "  "), (err) ->
           if err then return cb err
-          # console.log "Claiming site for #{id}"
+          console.log "Claiming site for ", id:id
           owner = id
           cb())
       else
@@ -93,18 +93,24 @@ module.exports = exports = (log, loga, argv) ->
 
   security.login = (updateOwner) ->
     (req, res) ->
-      ###
+      console.log 'friend login',
+        secret:req.secret
+        cookies:req.cookies
+        params:req.params
+        query:req.query
+        headers:req.headers
+        body:req.body
 
-      if owner is '' -- site is not claimed
+      if owner is '' # site is not claimed
+        # create a secret and write it to owner file and the cookie
         secret = require('crypto').randomBytes(64).toString('hex')
-        create a secret and write it to owner file and the cookie
+        console.log 'login req session', req.session
+        req.session.friend = secret
+        res.body = {name: 'a friend', friend: {secret: secret}}
+      else
+        console.log 'friend returning login'
 
-        res.session.friend = secret
-        id = {name: 'a friend', friend: {secret: secret}}
-
-      ###
-      console.log 'friends: login'
-      "ok"
+      res.send("OK")
 
   security.reclaim = () ->
     (req, res) ->
