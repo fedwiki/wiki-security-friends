@@ -26,9 +26,7 @@ module.exports = exports = (log, loga, argv) ->
   #### Private utility methods. ####
 
   user = ''
-
   owner = ''
-
   admin = argv.admin
 
   # save the location of the identity file
@@ -69,7 +67,6 @@ module.exports = exports = (log, loga, argv) ->
       else
         cb()
 
-
   security.getUser = (req) ->
     if req.session.friend
       return req.session.friend
@@ -94,7 +91,6 @@ module.exports = exports = (log, loga, argv) ->
 
   security.login = (updateOwner) ->
     (req, res) ->
-
       nickname = (seed) ->
         rn = new Math.seedrandom(seed)
         c = "bcdfghjklmnprstvwy"
@@ -105,10 +101,7 @@ module.exports = exports = (log, loga, argv) ->
       if owner is '' # site is not claimed
         # create a secret and write it to owner file and the cookie
         secret = require('crypto').randomBytes(32).toString('hex')
-        console.log 'login req session', req.session
         req.session.friend = secret
-        console.log 'login req session', req.session
-
         nick = nickname secret
         id = {name: nick, friend: {secret: secret}}
         setOwner id, (err) ->
@@ -124,12 +117,8 @@ module.exports = exports = (log, loga, argv) ->
         console.log 'friend returning login'
         res.sendStatus(501)
 
-
-
   security.reclaim = () ->
     (req, res) ->
-      console.log 'param:', req.params.secret
-
       try
         if owner.friend.secret is req.params.secret
           req.session.friend = owner.friend.secret
@@ -140,24 +129,14 @@ module.exports = exports = (log, loga, argv) ->
       catch error
         res.sendStatus(500)
 
-
-
   security.logout = () ->
-  (req, res) ->
-    console.log "friends: logout"
-
-  security.defineRoutes = (app, cors, updateOwner) ->
-
-    app.post '/login', cors, security.login(updateOwner)
-
-    # /auth/reclaim#df89usy6pew98ryb
-    app.get '/auth/reclaim/:secret', cors, security.reclaim()
-
-
-    app.post '/logout', cors, (req, res) ->
+    (req, res) ->
       req.session.reset()
-      security.logout()
       res.send("OK")
 
-  console.log 'friends defined'
+  security.defineRoutes = (app, cors, updateOwner) ->
+    app.post '/login', cors, security.login(updateOwner)
+    app.post '/logout', cors, security.logout()
+    app.get '/auth/reclaim/:secret', cors, security.reclaim()
+
   security
