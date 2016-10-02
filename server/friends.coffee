@@ -49,7 +49,7 @@ module.exports = exports = (log, loga, argv) ->
         cb()
 
   # Return the owners name
-  security.getOwner = ->
+  security.getOwner = getOwner = ->
     if !owner.name?
       ownerName = ''
     else
@@ -93,34 +93,44 @@ module.exports = exports = (log, loga, argv) ->
 
   security.login = (updateOwner) ->
     (req, res) ->
-      console.log 'friend login',
-        secret:req.secret
-        cookies:req.cookies
-        params:req.params
-        query:req.query
-        headers:req.headers
-        body:req.body
+
 
       if owner is '' # site is not claimed
         # create a secret and write it to owner file and the cookie
         secret = require('crypto').randomBytes(64).toString('hex')
         console.log 'login req session', req.session
         req.session.friend = secret
-        res.body = {name: 'a friend', friend: {secret: secret}}
+        console.log 'login req session', req.session
+        id = {name: 'a friend', friend: {secret: secret}}
+        setOwner id, (err) ->
+          if err
+            console.log 'Failed to claim wiki ', req.hostname, 'error ', err
+            res.sendStatus(500)
+          updateOwner getOwner
+          res.json({
+            ownerName: 'a friend'
+            })
+          res.end
       else
         console.log 'friend returning login'
+        res.sendStatus(501)
 
-      res.send("OK")
+
 
   security.reclaim = () ->
     (req, res) ->
-      ###
-        check reclaim code is valid
-        if not valid ignore request and exit
-        if valid create cookie with secret and redirect to wiki site
-      ###
-      console.log 'friends: reclaim'
-      "ok"
+      console.log 'param:', req.params.secret
+
+      try
+        if owner.friend.secret is req.params.secret
+          req.session.friend = owner.friend.secret
+          res.redirect('/view/welcome-visitors')
+        else
+          res.sendStatus(401)
+
+      catch error
+        res.sendStatus(500)
+
 
 
   security.logout = () ->
@@ -131,9 +141,9 @@ module.exports = exports = (log, loga, argv) ->
 
     app.post '/login', cors, security.login(updateOwner)
 
-    ### /auth/reclaim#df89usy6pew98ryb
-    app.post '/auth/reclaim', cors, security.reclaim
-    ###
+    # /auth/reclaim#df89usy6pew98ryb
+    app.get '/auth/reclaim/:secret', cors, security.reclaim()
+
 
     app.post '/logout', cors, (req, res) ->
       req.session.reset()

@@ -43,7 +43,10 @@ update_footer = (ownerName, isAuthenticated) ->
         .then (response) ->
           console.log 'login response', response
           if response.ok
-            update_footer ownerName, isAuthenticated
+            response.json().then (json) ->
+              ownerName = json.ownerName
+              window.isClaimed = true
+              update_footer ownerName, true
           else
             console.log 'login failed: ', response
         # code to claim with wiki - just call to /login
