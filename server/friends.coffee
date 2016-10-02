@@ -32,6 +32,14 @@ module.exports = exports = (log, loga, argv) ->
   # save the location of the identity file
   idFile = argv.id
 
+  nickname = (seed) ->
+    rn = new Math.seedrandom(seed)
+    c = "bcdfghjklmnprstvwy"
+    v = "aeiou"
+    ch = (string) -> string.charAt Math.floor rn() * string.length
+    ch(c) + ch(v) + ch(c) + ch(v) + ch(c) + ch(v)
+
+
   #### Public stuff ####
 
   # Retrieve owner infomation from identity file in status directory
@@ -91,12 +99,6 @@ module.exports = exports = (log, loga, argv) ->
 
   security.login = (updateOwner) ->
     (req, res) ->
-      nickname = (seed) ->
-        rn = new Math.seedrandom(seed)
-        c = "bcdfghjklmnprstvwy"
-        v = "aeiou"
-        ch = (string) -> string.charAt Math.floor rn() * string.length
-        ch(c) + ch(v) + ch(c) + ch(v) + ch(c) + ch(v)
 
       if owner is '' # site is not claimed
         # create a secret and write it to owner file and the cookie
@@ -117,6 +119,11 @@ module.exports = exports = (log, loga, argv) ->
         console.log 'friend returning login'
         res.sendStatus(501)
 
+  security.logout = () ->
+    (req, res) ->
+      req.session.reset()
+      res.send("OK")
+
   security.reclaim = () ->
     (req, res) ->
       try
@@ -128,11 +135,6 @@ module.exports = exports = (log, loga, argv) ->
 
       catch error
         res.sendStatus(500)
-
-  security.logout = () ->
-    (req, res) ->
-      req.session.reset()
-      res.send("OK")
 
   security.defineRoutes = (app, cors, updateOwner) ->
     app.post '/login', cors, security.login(updateOwner)
