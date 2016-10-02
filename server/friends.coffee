@@ -15,6 +15,7 @@
 #### Requires ####
 console.log 'friends starting'
 fs = require 'fs'
+require 'seedrandom'
 
 
 # Export a function that generates security handler
@@ -94,6 +95,12 @@ module.exports = exports = (log, loga, argv) ->
   security.login = (updateOwner) ->
     (req, res) ->
 
+      nickname = (seed) ->
+        rn = new Math.seedrandom(seed)
+        c = "bcdfghjklmnprstvwy"
+        v = "aeiou"
+        ch = (string) -> string.charAt Math.floor rn() * string.length
+        ch(c) + ch(v) + ch(c) + ch(v) + ch(c) + ch(v)
 
       if owner is '' # site is not claimed
         # create a secret and write it to owner file and the cookie
@@ -101,14 +108,16 @@ module.exports = exports = (log, loga, argv) ->
         console.log 'login req session', req.session
         req.session.friend = secret
         console.log 'login req session', req.session
-        id = {name: 'a friend', friend: {secret: secret}}
+
+        nick = nickname secret
+        id = {name: nick, friend: {secret: secret}}
         setOwner id, (err) ->
           if err
             console.log 'Failed to claim wiki ', req.hostname, 'error ', err
             res.sendStatus(500)
           updateOwner getOwner
           res.json({
-            ownerName: 'a friend'
+            ownerName: nick
             })
           res.end
       else
