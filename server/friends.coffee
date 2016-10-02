@@ -97,7 +97,7 @@ module.exports = exports = (log, loga, argv) ->
 
       if owner is '' # site is not claimed
         # create a secret and write it to owner file and the cookie
-        secret = require('crypto').randomBytes(64).toString('hex')
+        secret = require('crypto').randomBytes(32).toString('hex')
         console.log 'login req session', req.session
         req.session.friend = secret
         console.log 'login req session', req.session
