@@ -15,6 +15,7 @@
 #### Requires ####
 console.log 'friends starting'
 fs = require 'fs'
+require 'seedrandom'
 
 
 # Export a function that generates security handler
@@ -25,13 +26,19 @@ module.exports = exports = (log, loga, argv) ->
   #### Private utility methods. ####
 
   user = ''
-
   owner = ''
-
   admin = argv.admin
 
   # save the location of the identity file
   idFile = argv.id
+
+  nickname = (seed) ->
+    rn = new Math.seedrandom(seed)
+    c = "bcdfghjklmnprstvwy"
+    v = "aeiou"
+    ch = (string) -> string.charAt Math.floor rn() * string.length
+    ch(c) + ch(v) + ch(c) + ch(v) + ch(c) + ch(v)
+
 
   #### Public stuff ####
 
@@ -68,7 +75,6 @@ module.exports = exports = (log, loga, argv) ->
       else
         cb()
 
-
   security.getUser = (req) ->
     if req.session.friend
       return req.session.friend
@@ -94,33 +100,32 @@ module.exports = exports = (log, loga, argv) ->
   security.login = (updateOwner) ->
     (req, res) ->
 
-
       if owner is '' # site is not claimed
         # create a secret and write it to owner file and the cookie
-        secret = require('crypto').randomBytes(64).toString('hex')
-        console.log 'login req session', req.session
+        secret = require('crypto').randomBytes(32).toString('hex')
         req.session.friend = secret
-        console.log 'login req session', req.session
-        id = {name: 'a friend', friend: {secret: secret}}
+        nick = nickname secret
+        id = {name: nick, friend: {secret: secret}}
         setOwner id, (err) ->
           if err
             console.log 'Failed to claim wiki ', req.hostname, 'error ', err
             res.sendStatus(500)
           updateOwner getOwner
           res.json({
-            ownerName: 'a friend'
+            ownerName: nick
             })
           res.end
       else
         console.log 'friend returning login'
         res.sendStatus(501)
 
-
+  security.logout = () ->
+    (req, res) ->
+      req.session.reset()
+      res.send("OK")
 
   security.reclaim = () ->
     (req, res) ->
-      console.log 'param:', req.params.secret
-
       try
         if owner.friend.secret is req.params.secret
           req.session.friend = owner.friend.secret
@@ -131,24 +136,9 @@ module.exports = exports = (log, loga, argv) ->
       catch error
         res.sendStatus(500)
 
-
-
-  security.logout = () ->
-  (req, res) ->
-    console.log "friends: logout"
-
   security.defineRoutes = (app, cors, updateOwner) ->
-
     app.post '/login', cors, security.login(updateOwner)
-
-    # /auth/reclaim#df89usy6pew98ryb
+    app.post '/logout', cors, security.logout()
     app.get '/auth/reclaim/:secret', cors, security.reclaim()
 
-
-    app.post '/logout', cors, (req, res) ->
-      req.session.reset()
-      security.logout()
-      res.send("OK")
-
-  console.log 'friends defined'
   security
