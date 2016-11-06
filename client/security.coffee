@@ -26,7 +26,19 @@ update_footer = (ownerName, isAuthenticated) ->
   if isAuthenticated
     $('footer > #security').append "<a href='#' id='logout' class='footer-item' title='Sign-out'><i class='fa fa-unlock fa-lg fa-fw'></i></a>"
     $('footer > #security > #logout').click (e) ->
-      # log the user out...
+      e.preventDefault()
+      myInit = {
+        method: 'GET'
+        cache: 'no-cache'
+        mode: 'same-origin'
+        credentials: 'include'
+      }
+      fetch '/logout', myInit
+      .then (response) ->
+        if response.ok
+          update_footer ownerName, false
+        else
+          console.log 'logout failed: ', response
 
   else
     if !isClaimed
