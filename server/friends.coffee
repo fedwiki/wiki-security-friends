@@ -138,7 +138,7 @@ module.exports = exports = (log, loga, argv) ->
 
   security.defineRoutes = (app, cors, updateOwner) ->
     app.post '/login', cors, security.login(updateOwner)
-    app.post '/logout', cors, security.logout()
+    app.get '/logout', cors, security.logout()
     app.get '/auth/reclaim/:secret', cors, security.reclaim()
 
   security
