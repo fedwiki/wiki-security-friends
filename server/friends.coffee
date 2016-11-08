@@ -126,19 +126,23 @@ module.exports = exports = (log, loga, argv) ->
 
   security.reclaim = () ->
     (req, res) ->
-      try
-        if owner.friend.secret is req.params.secret
-          req.session.friend = owner.friend.secret
-          res.redirect('/view/welcome-visitors')
-        else
-          res.sendStatus(401)
+      reclaimCode = ''
+      req.on('data', (chunk) ->
+        reclaimCode += chunk.toString())
 
-      catch error
-        res.sendStatus(500)
+      req.on('end', () ->
+        try
+          if owner.friend.secret is reclaimCode
+            req.session.friend = owner.friend.secret
+            res.end()
+          else
+            res.sendStatus(401)
+        catch error
+          res.sendStatus(500))
 
   security.defineRoutes = (app, cors, updateOwner) ->
     app.post '/login', cors, security.login(updateOwner)
     app.get '/logout', cors, security.logout()
-    app.get '/auth/reclaim/:secret', cors, security.reclaim()
+    app.post '/auth/reclaim/', cors, security.reclaim()
 
   security

@@ -69,13 +69,16 @@ update_footer = (ownerName, isAuthenticated) ->
         reclaimCode = ''
         reclaimCode = window.prompt(reclaimMessage)
         unless reclaimCode is ''
+          data = new FormData()
+          data.append( "json", JSON.stringify({reclaimCode: reclaimCode}))
           myInit = {
-            method: 'GET'
+            method: 'POST'
             cache: 'no-cache'
             mode: 'same-origin'
             credentials: 'include'
+            body: reclaimCode
           }
-          fetch '/auth/reclaim/' + reclaimCode
+          fetch '/auth/reclaim/', myInit
           .then (response) ->
             console.log 'reclaim response', response
             if response.ok
