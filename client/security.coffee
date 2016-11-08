@@ -94,6 +94,13 @@ setup = (user) ->
   if (!$("link[href='/security/style.css']").length)
     $('<link rel="stylesheet" href="/security/style.css">').appendTo("head")
 
-  update_footer ownerName, isAuthenticated
+  wiki.getScript '/security/modernizr-custom.js', () ->
+    unless Modernizr.promises
+      require('es6-promise').polyfill()
+
+    unless Modernizr.fetch
+      require('whatwg-fetch')
+
+    update_footer ownerName, isAuthenticated
 
 window.plugins.security = {setup, update_footer}
