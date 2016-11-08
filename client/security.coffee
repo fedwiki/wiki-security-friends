@@ -61,10 +61,27 @@ update_footer = (ownerName, isAuthenticated) ->
               update_footer ownerName, true
           else
             console.log 'login failed: ', response
-        # code to claim with wiki - just call to /login
     else
-      signonTitle = 'Wiki already claimed'
+      signonTitle = 'Reclaim this Wiki'
       $('footer > #security').append "<a href='#' id='show-security-dialog' class='footer-item' title='#{signonTitle}'><i class='fa fa-lock fa-lg fa-fw'></i></a>"
+      $('footer > #security > #show-security-dialog').click (e) ->
+        reclaimMessage = "Welcome back #{ownerName}. Please enter your reclaim code to reconnect with your wiki."
+        reclaimCode = ''
+        reclaimCode = window.prompt(reclaimMessage)
+        unless reclaimCode is ''
+          myInit = {
+            method: 'GET'
+            cache: 'no-cache'
+            mode: 'same-origin'
+            credentials: 'include'
+          }
+          fetch '/auth/reclaim/' + reclaimCode
+          .then (response) ->
+            console.log 'reclaim response', response
+            if response.ok
+              update_footer ownerName, true
+            else
+              console.log 'reclaim failed: ', response
 
 
 
