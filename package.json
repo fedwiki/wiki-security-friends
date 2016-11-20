@@ -1,7 +1,7 @@
 {
   "name": "wiki-security-friends",
   "description": "A friendly security module (dependency free) for Federated Wiki node server",
-  "version": "0.1.0-alpha.1",
+  "version": "1.0.0",
   "author": "Paul Rodwell <paul.rodwell@btinternet.com> (http://rodwell.me/)",
   "contributors": [
     "Ward Cunningham <ward@c2.com>"
@@ -22,10 +22,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/paul90/wiki-security-friends.git"
+    "url": "https://github.com/fedwiki/wiki-security-friends.git"
   },
   "bugs": {
-    "url": "https://github.com/paul90/wiki-security-friends/issues"
+    "url": "https://github.com/fedwiki/wiki-security-friends/issues"
   },
   "engines": {
     "node": ">=4"
