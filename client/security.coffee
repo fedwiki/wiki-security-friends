@@ -61,10 +61,30 @@ update_footer = (ownerName, isAuthenticated) ->
               update_footer ownerName, true
           else
             console.log 'login failed: ', response
-        # code to claim with wiki - just call to /login
     else
-      signonTitle = 'Wiki already claimed'
+      signonTitle = 'Reclaim this Wiki'
       $('footer > #security').append "<a href='#' id='show-security-dialog' class='footer-item' title='#{signonTitle}'><i class='fa fa-lock fa-lg fa-fw'></i></a>"
+      $('footer > #security > #show-security-dialog').click (e) ->
+        reclaimMessage = "Welcome back #{ownerName}. Please enter your reclaim code to reconnect with your wiki."
+        reclaimCode = ''
+        reclaimCode = window.prompt(reclaimMessage)
+        unless reclaimCode is ''
+          data = new FormData()
+          data.append( "json", JSON.stringify({reclaimCode: reclaimCode}))
+          myInit = {
+            method: 'POST'
+            cache: 'no-cache'
+            mode: 'same-origin'
+            credentials: 'include'
+            body: reclaimCode
+          }
+          fetch '/auth/reclaim/', myInit
+          .then (response) ->
+            console.log 'reclaim response', response
+            if response.ok
+              update_footer ownerName, true
+            else
+              console.log 'reclaim failed: ', response
 
 
 
@@ -77,6 +97,13 @@ setup = (user) ->
   if (!$("link[href='/security/style.css']").length)
     $('<link rel="stylesheet" href="/security/style.css">').appendTo("head")
 
-  update_footer ownerName, isAuthenticated
+  wiki.getScript '/security/modernizr-custom.js', () ->
+    unless Modernizr.promises
+      require('es6-promise').polyfill()
+
+    unless Modernizr.fetch
+      require('whatwg-fetch')
+
+    update_footer ownerName, isAuthenticated
 
 window.plugins.security = {setup, update_footer}

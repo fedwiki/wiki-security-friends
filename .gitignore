@@ -3,3 +3,6 @@ node_modules
 /client/*.js
 /client/*.map
 /server/*.js
+
+# don't ignore modernizr-custom.js
+!/client/modernizr-custom.js
