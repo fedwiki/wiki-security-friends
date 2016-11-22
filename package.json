@@ -1,7 +1,7 @@
 {
   "name": "wiki-security-friends",
   "description": "A friendly security module (dependency free) for Federated Wiki node server",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": "Paul Rodwell <paul.rodwell@btinternet.com> (http://rodwell.me/)",
   "contributors": [
     "Ward Cunningham <ward@c2.com>"
@@ -13,12 +13,12 @@
   },
   "devDependencies": {
     "coffeeify": "*",
-    "es6-promise": "^3.3.1",
+    "es6-promise": "^4.0.5",
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-git-authors": "^3.2.0",
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^2.0.1"
   },
   "repository": {
     "type": "git",
