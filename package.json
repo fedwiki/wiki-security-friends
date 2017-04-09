@@ -8,17 +8,17 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "coffee-script": "^1.11.1",
+    "coffee-script": "^1.12.4",
     "seedrandom": "^2.4"
   },
   "devDependencies": {
-    "coffeeify": "*",
-    "es6-promise": "^4.0.5",
+    "coffeeify": "^2.1.0",
+    "es6-promise": "^4.1.0",
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-git-authors": "^3.2.0",
-    "whatwg-fetch": "^2.0.1"
+    "whatwg-fetch": "^2.0.3"
   },
   "repository": {
     "type": "git",
