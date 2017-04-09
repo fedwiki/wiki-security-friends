@@ -36,6 +36,7 @@ update_footer = (ownerName, isAuthenticated) ->
       fetch '/logout', myInit
       .then (response) ->
         if response.ok
+          window.isAuthenticated = false
           update_footer ownerName, false
         else
           console.log 'logout failed: ', response
@@ -58,6 +59,7 @@ update_footer = (ownerName, isAuthenticated) ->
             response.json().then (json) ->
               ownerName = json.ownerName
               window.isClaimed = true
+              window.isAuthenticated = true
               update_footer ownerName, true
           else
             console.log 'login failed: ', response
@@ -82,6 +84,7 @@ update_footer = (ownerName, isAuthenticated) ->
           .then (response) ->
             console.log 'reclaim response', response
             if response.ok
+              window.isAuthenticated = true
               update_footer ownerName, true
             else
               console.log 'reclaim failed: ', response
