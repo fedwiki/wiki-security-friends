@@ -15,7 +15,7 @@
 #### Requires ####
 console.log 'friends starting'
 fs = require 'fs'
-require 'seedrandom'
+seedrandom = require 'seedrandom'
 
 
 # Export a function that generates security handler
@@ -33,7 +33,7 @@ module.exports = exports = (log, loga, argv) ->
   idFile = argv.id
 
   nickname = (seed) ->
-    rn = new Math.seedrandom(seed)
+    rn = seedrandom(seed)
     c = "bcdfghjklmnprstvwy"
     v = "aeiou"
     ch = (string) -> string.charAt Math.floor rn() * string.length
