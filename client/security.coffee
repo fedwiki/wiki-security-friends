@@ -27,7 +27,7 @@ update_footer = (ownerName, isAuthenticated) ->
 
   if isAuthenticated
     $('footer > #security').append "<a href='#' id='logout' class='footer-item' title='Sign-out'><i class='fas fa-lock-open fa-fw'></i></a>"
-    $('footer > #security > #logout').click (e) ->
+    $('footer > #security > #logout').on 'click', (e) ->
       e.preventDefault()
       myInit = {
         method: 'GET'
@@ -47,7 +47,7 @@ update_footer = (ownerName, isAuthenticated) ->
     if !isClaimed
       signonTitle = 'Claim this Wiki'
       $('footer > #security').append "<a href='#' id='show-security-dialog' class='footer-item' title='#{signonTitle}'><i class='fas fa-lock fa-fw'></i></a>"
-      $('footer > #security > #show-security-dialog').click (e) ->
+      $('footer > #security > #show-security-dialog').on 'click', (e) ->
         myInit = {
           method: 'POST'
           cache: 'no-cache'
@@ -68,7 +68,7 @@ update_footer = (ownerName, isAuthenticated) ->
     else
       signonTitle = 'Reclaim this Wiki'
       $('footer > #security').append "<a href='#' id='show-security-dialog' class='footer-item' title='#{signonTitle}'><i class='fas fa-lock fa-fw'></i></a>"
-      $('footer > #security > #show-security-dialog').click (e) ->
+      $('footer > #security > #show-security-dialog').on 'click', (e) ->
         reclaimMessage = "Welcome back #{ownerName}. Please enter your reclaim code to reconnect with your wiki."
         reclaimCode = ''
         reclaimCode = window.prompt(reclaimMessage)
