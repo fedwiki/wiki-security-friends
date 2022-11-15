@@ -26,7 +26,10 @@ update_footer = (ownerName, isAuthenticated) ->
   $('footer > #security').empty()
 
   if isAuthenticated
-    $('footer > #security').append "<a href='#' id='logout' class='footer-item' title='Sign-out'><i class='fas fa-lock-open fa-fw'></i></a>"
+    if isOwner
+      $('footer > #security').append "<a href='#' id='logout' class='footer-item' title='Sign-out'><i class='fas fa-lock-open fa-fw'></i></a>"
+    else
+      $('footer > #security').append "<a href='#' id='logout' class='footer-item' title='Not Owner : Sign-out'><i class='fas fa-lock fa-fw notOwner'></i></a>"
     $('footer > #security > #logout').on 'click', (e) ->
       e.preventDefault()
       myInit = {

@@ -6,3 +6,7 @@
 #isOwner {
   color: green;
 }
+
+.notOwner {
+  transform: rotate(20deg);
+}

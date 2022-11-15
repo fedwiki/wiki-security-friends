@@ -77,7 +77,7 @@ module.exports = exports = (log, loga, argv) ->
 
   security.getUser = (req) ->
     if req.session.friend
-      return req.session.friend
+      return true
     else
       return ''
 
