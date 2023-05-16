@@ -72,27 +72,9 @@ update_footer = (ownerName, isAuthenticated) ->
       signonTitle = 'Reclaim this Wiki'
       $('footer > #security').append "<a href='#' id='show-security-dialog' class='footer-item' title='#{signonTitle}'><i class='fas fa-lock fa-fw'></i></a>"
       $('footer > #security > #show-security-dialog').on 'click', (e) ->
-        reclaimMessage = "Welcome back #{ownerName}. Please enter your reclaim code to reconnect with your wiki."
-        reclaimCode = ''
-        reclaimCode = window.prompt(reclaimMessage)
-        unless reclaimCode is ''
-          data = new FormData()
-          data.append( "json", JSON.stringify({reclaimCode: reclaimCode}))
-          myInit = {
-            method: 'POST'
-            cache: 'no-cache'
-            mode: 'same-origin'
-            credentials: 'include'
-            body: reclaimCode
-          }
-          fetch '/auth/reclaim/', myInit
-          .then (response) ->
-            console.log 'reclaim response', response
-            if response.ok
-              window.isAuthenticated = true
-              update_footer ownerName, true
-            else
-              console.log 'reclaim failed: ', response
+        reclaimDialog = document.getElementById('reclaim')
+
+        reclaimDialog.showModal()
 
 
 
@@ -106,13 +88,59 @@ setup = (user) ->
   if (!$("link[href='/security/style.css']").length)
     $('<link rel="stylesheet" href="/security/style.css">').appendTo("head")
 
-  wiki.getScript '/security/modernizr-custom.js', () ->
-    unless Modernizr.promises
-      require('es6-promise').polyfill()
+  dialog = """
+            <dialog id="reclaim">
+              <form method="dialog">
+                <h1>Welcome back #{ownerName}.</h1>
+                <p>Please enter your reclaim code.</p>
+                <input type="password" id="reclaimcode" name="reclaim" required>
+                <div>
+                  <menu>
+                    <li><button formmethod="dialog" value="">Cancel</button></li>
+                    <li><button autofocus id="confirmBtn" value="default">Submit</button></li>
+                  </menu>
+                </div>
+              </form>
+            </dialog>
+           """
+  if (!document.getElementById('reclaim'))
+    $(dialog).appendTo("body")
 
-    unless Modernizr.fetch
-      require('whatwg-fetch')
+    reclaimDialog = document.getElementById('reclaim')
+    reclaimEl = reclaimDialog.querySelector('#reclaimcode')
+    confirmBtn = reclaimDialog.querySelector('#confirmBtn')
 
-    update_footer ownerName, isAuthenticated
+    confirmBtn.addEventListener 'click', (event) -> 
+      event.preventDefault()
+      reclaimDialog.close(reclaimEl.value)
+
+    reclaimEl.addEventListener 'change', (event) ->
+      confirmBtn.value = reclaimEl.value
+
+    reclaimDialog.addEventListener 'close', (event) ->
+      event.preventDefault()
+      reclaimCode = reclaimDialog.returnValue
+    
+      unless reclaimCode is ''
+        data = new FormData()
+        data.append( "json", JSON.stringify({reclaimCode: reclaimCode}))
+        myInit = {
+          method: 'POST'
+          cache: 'no-cache'
+          mode: 'same-origin'
+          credentials: 'include'
+          body: reclaimCode
+        }
+        fetch '/auth/reclaim/', myInit
+        .then (response) ->
+          console.log 'reclaim response', response
+          if response.ok
+            window.isAuthenticated = true
+            window.isOwner = true
+            update_footer ownerName, true
+          else
+            console.log 'reclaim failed: ', response
+
+  update_footer ownerName, isAuthenticated
 
 window.plugins.security = {setup, update_footer}
