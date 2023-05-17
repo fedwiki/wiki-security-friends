@@ -1,7 +1,7 @@
 {
   "name": "wiki-security-friends",
   "description": "A friendly security module (dependency free) for Federated Wiki node server",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "author": "Paul Rodwell <paul.rodwell@btinternet.com> (http://rodwell.me/)",
   "contributors": [
     "Ward Cunningham <ward@c2.com>"
