@@ -10,3 +10,24 @@
 .notOwner {
   transform: rotate(20deg);
 }
+
+dialog {
+  border: none;
+  box-shadow: #00000029 2px 2px 5px 2px;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+dialog h1 {
+  margin-top: 0px;
+  font-size: medium;
+}
+
+dialog menu {
+  float: right;
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin-bottom: 0;
+  gap: 1em;
+}
