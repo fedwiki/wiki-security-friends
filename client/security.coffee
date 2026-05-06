@@ -75,6 +75,11 @@ update_footer = (ownerName, isAuthenticated) ->
         reclaimDialog = document.getElementById('reclaim')
 
         reclaimDialog.showModal()
+        requestAnimationFrame ->
+          reclaimEl = reclaimDialog.querySelector('#reclaimcode')
+          reclaimEl.focus()
+          # selecting the input text allows the user to easily overwrite an existing code
+          reclaimEl.select()
 
 
 
@@ -93,11 +98,11 @@ setup = (user) ->
               <form method="dialog" id="reclaim-form">
                 <h1>Welcome back #{ownerName}.</h1>
                 <p>Please enter your reclaim code.</p>
-                <input type="password" id="reclaimcode" name="reclaim" required>
+                <input type="password" id="reclaimcode" name="reclaim" autofocus required>
                 <div>
                   <menu>
                     <li><button id="cancelBtn">Cancel</button></li>
-                    <li><button autofocus id="confirmBtn">Submit</button></li>
+                    <li><button id="confirmBtn">Submit</button></li>
                   </menu>
                 </div>
               </form>
